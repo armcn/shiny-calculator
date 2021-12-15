@@ -5,9 +5,9 @@ account: andrewrmcneil
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 5328718
-bundleId: 5373672
+bundleId: 5373730
 url: https://andrewrmcneil.shinyapps.io/calculator/
-when: 1639531339.47461
-lastSyncTime: 1639531339.47462
+when: 1639532672.74097
+lastSyncTime: 1639532672.74098
 asMultiple: FALSE
 asStatic: FALSE

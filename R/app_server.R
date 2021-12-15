@@ -22,54 +22,120 @@ app_server <- function(input, output, session) {
     cleared = TRUE
   )
   
+  
   # ---- UPDATE ----
   
-  observeEvent(input$zero, update_number(0))
+  observeEvent(
+    input$zero, 
+    update_number(0)
+  )
   
-  observeEvent(input$one, update_number(1))
+  observeEvent(
+    input$one, 
+    update_number(1)
+  )
   
-  observeEvent(input$two, update_number(2))
+  observeEvent(
+    input$two, 
+    update_number(2)
+  )
   
-  observeEvent(input$three, update_number(3))
+  observeEvent(
+    input$three, 
+    update_number(3)
+  )
   
-  observeEvent(input$four, update_number(4))
+  observeEvent(
+    input$four, 
+    update_number(4)
+  )
   
-  observeEvent(input$five, update_number(5))
+  observeEvent(
+    input$five, 
+    update_number(5)
+  )
   
-  observeEvent(input$six, update_number(6))
+  observeEvent(
+    input$six, 
+    update_number(6)
+  )
   
-  observeEvent(input$seven, update_number(7))
+  observeEvent(
+    input$seven,
+    update_number(7)
+  )
   
-  observeEvent(input$eight, update_number(8))
+  observeEvent(
+    input$eight, 
+    update_number(8)
+  )
   
-  observeEvent(input$nine, update_number(9))
+  observeEvent(
+    input$nine, 
+    update_number(9)
+  )
   
-  observeEvent(input$add, add())
+  observeEvent(
+    input$add, 
+    add()
+  )
   
-  observeEvent(input$subtract, subtract())
+  observeEvent(
+    input$subtract, 
+    subtract()
+  )
   
-  observeEvent(input$multiply, multiply())
+  observeEvent(
+    input$multiply,
+    multiply()
+  )
   
-  observeEvent(input$divide, divide())
+  observeEvent(
+    input$divide, 
+    divide()
+  )
   
-  observeEvent(input$decimal, decimal())
+  observeEvent(
+    input$decimal,
+    decimal()
+  )
   
-  observeEvent(input$percent, percent())
+  observeEvent(
+    input$percent, 
+    percent()
+  )
   
-  observeEvent(input$plus_minus, plus_minus())
+  observeEvent(
+    input$plus_minus, 
+    plus_minus()
+  )
   
-  observeEvent(input$equals, equals())
+  observeEvent(
+    input$equals, 
+    equals()
+  )
   
-  observeEvent(input$clear, clear())
+  observeEvent(
+    input$clear, 
+    clear()
+  )
   
   update_number <- function(number) {
-    current_value <- new_current_value(number)
-    inputs <- new_inputs(current_value)
-    display <- new_display(inputs)
-    result <- model$operation(
-      as.double(model$last_value),
-      as.double(current_value)
-    )
+    current_value <- 
+      new_current_value(number)
+    
+    inputs <- 
+      new_inputs(current_value)
+    
+    display <- 
+      new_display(inputs)
+    
+    result <- 
+      model$operation(
+        as.double(model$last_value),
+        as.double(current_value)
+      )
+    
     if (display_is_too_long(display)) {
       return()
     } else {
@@ -84,8 +150,12 @@ app_server <- function(input, output, session) {
   }
   
   new_current_value <- function(number) {
-    number_string <- as.character(number)
-    current_value <- model$current_value
+    number_string <- 
+      as.character(number)
+    
+    current_value <- 
+      model$current_value
+    
     if (model$decimal) {
       stringr::str_glue("{current_value}.{number_string}")
     } else if (model$append & current_value != "0") {
@@ -136,10 +206,18 @@ app_server <- function(input, output, session) {
   }
   
   update_operation <- function(id, operation) {
-    last_value <- as.character(model$result)
-    inputs <- c(model$inputs, id)
-    display <- new_display(inputs)
-    last_input_was_operator <- model$current_value == ""
+    last_value <- 
+      as.character(model$result)
+    
+    inputs <- 
+      c(model$inputs, id)
+    
+    display <-
+      new_display(inputs)
+    
+    last_input_was_operator <-
+      model$current_value == ""
+    
     if (
       model$cleared || 
         last_input_was_operator ||
@@ -177,16 +255,24 @@ app_server <- function(input, output, session) {
     if (model$cleared) {
       return()
     } else {
-      current_value <- model$current_value |> 
-        as.double() |> 
-        fn() |> 
-        as.character()
-      inputs <- replace_last(current_value, model$inputs)
-      display <- new_display(inputs)
-      result <- model$operation(
-        as.double(model$last_value),
-        as.double(current_value)
-      )
+      current_value <- 
+        model$current_value |> 
+          as.double() |> 
+          fn() |> 
+          as.character()
+      
+      inputs <- 
+        replace_last(current_value, model$inputs)
+      
+      display <- 
+        new_display(inputs)
+      
+      result <- 
+        model$operation(
+          as.double(model$last_value),
+          as.double(current_value)
+        )
+      
       model$current_value <- current_value
       model$inputs <- inputs
       model$display <- display
@@ -209,7 +295,9 @@ app_server <- function(input, output, session) {
   }
   
   round_result <- function(result) {
-    rounded <- as.character(round(result, 2))
+    rounded <- 
+      as.character(round(result, 2))
+    
     if (stringr::str_detect(rounded, "\\.00")) {
       as.character(round(result))
     } else {
@@ -236,18 +324,3 @@ app_server <- function(input, output, session) {
   })
   
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
