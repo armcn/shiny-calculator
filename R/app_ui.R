@@ -55,14 +55,15 @@ screen_ui <- function() {
 
 upper_screen_ui <- function() {
   div(
-    class = "upper-screen"
+    class = "upper-screen",
+    uiOutput("upper_screen")
   )
 }
 
 lower_screen_ui <- function() {
   div(
     class = "lower-screen",
-    uiOutput("upper_screen")
+    uiOutput("lower_screen")
   )
 }
 
@@ -198,7 +199,6 @@ button <- function(input_id, label, width, colored) {
     width: {width}; 
     height: 7vh;
     color: {font_color};
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
     "
   )
   class <- if (colored) {

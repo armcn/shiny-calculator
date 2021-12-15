@@ -37,11 +37,11 @@
     "upper-screen"
     "lower-screen";
   grid-template-rows:
-    auto auto;
+    min-content min-content;
   grid-template-columns: 
     1fr;
   justify-items: end;
-  align-items: end;
+  align-content: end;
   padding: 3vh;
   border-radius: 5vh 5vh 0px 0px;
   background: rgb(28, 46, 82);
@@ -53,6 +53,20 @@
 
 .lower-screen {
   grid-area: lower-screen;
+}
+
+.upper-screen-text {
+  font-size: 5.5vh;
+  color: rgb(219, 144, 0);
+  padding: 0px;
+  margin: 0px;
+}
+
+.lower-screen-text {
+  font-size: 4vh;
+  color: rgb(229, 229, 229);
+  padding: 0px;
+  margin: 0px;
 }
 
 .button-pad {
@@ -153,9 +167,4 @@
 
 .equals {
   grid-area: equals;
-}
-
-.upper-screen-text {
-  font-size: 5.5vh;
-  color: rgb(219, 144, 0);
 }

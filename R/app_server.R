@@ -1,3 +1,17 @@
+init_model <- \() list(
+  inputs = list(),
+  display = "0",
+  last_value = "",
+  current_value = "0",
+  operation = default_operation,
+  result = 0,
+  append = FALSE,
+  decimal = FALSE,
+  cleared = TRUE
+)
+
+default_operation <- \(a, b) b
+
 #' The application server-side
 #' 
 #' @param input,output,session Internal parameters for {shiny}. 
@@ -6,24 +20,9 @@
 #' @noRd
 app_server <- function(input, output, session) {
   
-  
   # ---- MODEL ----
   
-  default_operation <- \(a, b) b
-  
-  model <- reactiveVal(
-    list(
-      inputs = c(),
-      display = "0",
-      last_value = "",
-      current_value = "0",
-      operation = default_operation,
-      append = FALSE,
-      decimal = FALSE,
-      cleared = TRUE
-    )
-  )
-  
+  model <- reactiveVal(init_model())
   
   # ---- UPDATE ----
   
@@ -85,7 +84,7 @@ app_server <- function(input, output, session) {
       return()
     } else {
       model() |> 
-        purrr::update_list(
+        purrr::list_modify(
           current_value = current_value,
           inputs = inputs,
           display = display,
@@ -123,7 +122,11 @@ app_server <- function(input, output, session) {
   }
   
   replace_last <- function(replacement, x) {
-    replace(x, length(x), replacement)
+    if (length(x) == 0) {
+      replacement
+    } else {
+      replace(x, length(x), replacement)
+    }
   } 
   
   new_display <- function(inputs) {
@@ -175,7 +178,7 @@ app_server <- function(input, output, session) {
       return()
     } else {
       model() |> 
-        purrr::update_list(
+        purrr::list_modify(
           operation = operation,
           last_value = last_value,
           current_value = "",
@@ -191,11 +194,11 @@ app_server <- function(input, output, session) {
   decimal <- function() {
     if (stringr::str_detect(model()$current_value, "\\.")) {
       model() |> 
-        purrr::update_list(decimal = FALSE) |> 
+        purrr::list_modify(decimal = FALSE) |> 
         model()
     } else {
       model() |> 
-        purrr::update_list(decimal = TRUE) |> 
+        purrr::list_modify(decimal = TRUE) |> 
         model()
     }
   }
@@ -231,7 +234,7 @@ app_server <- function(input, output, session) {
         )
       
       model() |> 
-        purrr::update_list(
+        purrr::list_modify(
           current_value = current_value,
           inputs = inputs,
           display = display,
@@ -252,7 +255,10 @@ app_server <- function(input, output, session) {
         list(result_string)
       
       model() |> 
-        purrr::update_list(
+        purrr::list_modify(
+          inputs = NULL
+        ) |> 
+        purrr::list_modify(
           inputs = inputs,
           display = result_string,
           last_value = "",
@@ -274,28 +280,26 @@ app_server <- function(input, output, session) {
     }
   }
   
-  observe(print(model()))
-  
   clear <- function() {
-    model() |> 
-      purrr::list_modify(
-        inputs = c(),
-        display = "0",
-        last_value = "",
-        current_value = "0",
-        result = 0,
-        operation = default_operation,
-        append = FALSE,
-        cleared = TRUE
-      ) |> 
-      model()
+    model(init_model())
   }
-  
   
   # ---- VIEW ----
   
-  output$upper_screen <- renderUI({
+  screen_text <- reactive(
+    if (length(model()$inputs) <= 2) {
+      ""
+    } else {
+      round_result(model()$result)
+    }
+  )
+  
+  output$upper_screen <- renderUI(
     p(model()$display, class = "upper-screen-text")
-  })
+  )
+  
+  output$lower_screen <- renderUI(
+    p(screen_text(), class = "lower-screen-text")
+  )
   
 }
