@@ -11,15 +11,17 @@ app_server <- function(input, output, session) {
   
   default_operation <- \(a, b) b
   
-  model <- reactiveValues(
-    inputs = list(),
-    display = "0",
-    last_value = "",
-    current_value = "0",
-    operation = default_operation,
-    append = FALSE,
-    decimal = FALSE,
-    cleared = TRUE
+  model <- reactiveVal(
+    list(
+      inputs = c(),
+      display = "0",
+      last_value = "",
+      current_value = "0",
+      operation = default_operation,
+      append = FALSE,
+      decimal = FALSE,
+      cleared = TRUE
+    )
   )
   
   
@@ -74,21 +76,25 @@ app_server <- function(input, output, session) {
       new_display(inputs)
     
     result <- 
-      model$operation(
-        as.double(model$last_value),
+      model()$operation(
+        as.double(model()$last_value),
         as.double(current_value)
       )
     
     if (display_is_too_long(display)) {
       return()
     } else {
-      model$current_value <- current_value
-      model$inputs <- inputs
-      model$display <- display
-      model$result <- result
-      model$append <- TRUE
-      model$decimal <- FALSE
-      model$cleared <- FALSE
+      model() |> 
+        purrr::update_list(
+          current_value = current_value,
+          inputs = inputs,
+          display = display,
+          result = result,
+          append = TRUE,
+          decimal = FALSE,
+          cleared = FALSE
+        ) |> 
+        model()
     }
   }
   
@@ -97,11 +103,11 @@ app_server <- function(input, output, session) {
       as.character(number)
     
     current_value <- 
-      model$current_value
+      model()$current_value
     
-    if (model$decimal) {
+    if (model()$decimal) {
       stringr::str_glue("{current_value}.{number_string}")
-    } else if (model$append & current_value != "0") {
+    } else if (model()$append & current_value != "0") {
       stringr::str_c(current_value, number_string)
     } else {
       number_string
@@ -109,15 +115,15 @@ app_server <- function(input, output, session) {
   }
   
   new_inputs <- function(current_value) {
-    if (model$append || model$decimal) {
-      replace_last(current_value, model$inputs)
+    if (model()$append || model()$decimal) {
+      replace_last(current_value, model()$inputs)
     } else {
-      c(model$inputs, current_value)
+      c(model()$inputs, current_value)
     }
   }
   
-  replace_last <- function(replacement, lst) {
-    replace(lst, length(lst), replacement)
+  replace_last <- function(replacement, x) {
+    replace(x, length(x), replacement)
   } 
   
   new_display <- function(inputs) {
@@ -150,39 +156,47 @@ app_server <- function(input, output, session) {
   
   update_operation <- function(id, operation) {
     last_value <- 
-      as.character(model$result)
+      as.character(model()$result)
     
     inputs <- 
-      c(model$inputs, id)
+      c(model()$inputs, id)
     
     display <-
       new_display(inputs)
     
     last_input_was_operator <-
-      model$current_value == ""
+      model()$current_value == ""
     
     if (
-      model$cleared || 
+      model()$cleared || 
         last_input_was_operator ||
         display_is_too_long(display)
     ) {
       return()
     } else {
-      model$operation <- operation
-      model$last_value <- last_value
-      model$current_value <- ""
-      model$inputs <- inputs
-      model$display <- display
-      model$append <- FALSE
-      model$decimal <- FALSE
+      model() |> 
+        purrr::update_list(
+          operation = operation,
+          last_value = last_value,
+          current_value = "",
+          inputs = inputs,
+          display = display,
+          append = FALSE,
+          decimal = FALSE
+        ) |> 
+        model()
     }
   }
   
   decimal <- function() {
-    if (stringr::str_detect(model$current_value, "\\.")) {
-      model$decimal <- FALSE
+    if (stringr::str_detect(model()$current_value, "\\.")) {
+      model() |> 
+        purrr::update_list(decimal = FALSE) |> 
+        model()
     } else {
-      model$decimal <- TRUE
+      model() |> 
+        purrr::update_list(decimal = TRUE) |> 
+        model()
     }
   }
   
@@ -195,45 +209,57 @@ app_server <- function(input, output, session) {
   }
   
   modify_current_value <- function(fn) {
-    if (model$cleared) {
+    if (model()$cleared) {
       return()
     } else {
       current_value <- 
-        model$current_value |> 
+        model()$current_value |> 
           as.double() |> 
           fn() |> 
           as.character()
       
       inputs <- 
-        replace_last(current_value, model$inputs)
+        replace_last(current_value, model()$inputs)
       
       display <- 
         new_display(inputs)
       
       result <- 
-        model$operation(
-          as.double(model$last_value),
+        model()$operation(
+          as.double(model()$last_value),
           as.double(current_value)
         )
       
-      model$current_value <- current_value
-      model$inputs <- inputs
-      model$display <- display
-      model$result <- result
+      model() |> 
+        purrr::update_list(
+          current_value = current_value,
+          inputs = inputs,
+          display = display,
+          result = result
+        ) |> 
+        model()
     }
   }
   
   equals <- function() {
-    if (model$cleared) {
+    if (model()$cleared) {
       return()
     } else {
-      result_string <- round_result(model$result)
-      inputs <- list(result_string)
-      model$inputs <- inputs
-      model$display <- result_string
-      model$last_value <- ""
-      model$current_value <- result_string
-      model$operation <- default_operation
+      result_string <- 
+        round_result(model()$result)
+      
+      inputs <- 
+        list(result_string)
+      
+      model() |> 
+        purrr::update_list(
+          inputs = inputs,
+          display = result_string,
+          last_value = "",
+          current_value = result_string,
+          operation = default_operation
+        ) |> 
+        model()
     }
   }
   
@@ -248,22 +274,28 @@ app_server <- function(input, output, session) {
     }
   }
   
+  observe(print(model()))
+  
   clear <- function() {
-    model$inputs <- list()
-    model$display <- "0"
-    model$last_value <- ""
-    model$current_value <- "0"
-    model$result <- 0
-    model$operation <- default_operation
-    model$append <- FALSE
-    model$cleared <- TRUE
+    model() |> 
+      purrr::list_modify(
+        inputs = c(),
+        display = "0",
+        last_value = "",
+        current_value = "0",
+        result = 0,
+        operation = default_operation,
+        append = FALSE,
+        cleared = TRUE
+      ) |> 
+      model()
   }
   
   
   # ---- VIEW ----
   
   output$upper_screen <- renderUI({
-    p(model$display, class = "upper-screen-text")
+    p(model()$display, class = "upper-screen-text")
   })
   
 }
