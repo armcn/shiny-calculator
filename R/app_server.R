@@ -25,100 +25,43 @@ app_server <- function(input, output, session) {
   
   # ---- UPDATE ----
   
-  observeEvent(
-    input$zero, 
-    update_number(0)
-  )
+  observe(update_number(0)) |> bindEvent(input$zero)
   
-  observeEvent(
-    input$one, 
-    update_number(1)
-  )
+  observe(update_number(1)) |> bindEvent(input$one)
   
-  observeEvent(
-    input$two, 
-    update_number(2)
-  )
+  observe(update_number(2)) |> bindEvent(input$two)
   
-  observeEvent(
-    input$three, 
-    update_number(3)
-  )
+  observe(update_number(3)) |> bindEvent(input$three)
   
-  observeEvent(
-    input$four, 
-    update_number(4)
-  )
+  observe(update_number(4)) |> bindEvent(input$four)
   
-  observeEvent(
-    input$five, 
-    update_number(5)
-  )
+  observe(update_number(5)) |> bindEvent(input$five)
   
-  observeEvent(
-    input$six, 
-    update_number(6)
-  )
+  observe(update_number(6)) |> bindEvent(input$six)
   
-  observeEvent(
-    input$seven,
-    update_number(7)
-  )
+  observe(update_number(7)) |> bindEvent(input$seven)
   
-  observeEvent(
-    input$eight, 
-    update_number(8)
-  )
+  observe(update_number(8)) |> bindEvent(input$eight)
   
-  observeEvent(
-    input$nine, 
-    update_number(9)
-  )
+  observe(update_number(9)) |> bindEvent(input$nine)
   
-  observeEvent(
-    input$add, 
-    add()
-  )
+  observe(add()) |> bindEvent(input$add)
   
-  observeEvent(
-    input$subtract, 
-    subtract()
-  )
+  observe(subtract()) |> bindEvent(input$subtract)
   
-  observeEvent(
-    input$multiply,
-    multiply()
-  )
+  observe(multiply()) |> bindEvent(input$multiply)
   
-  observeEvent(
-    input$divide, 
-    divide()
-  )
+  observe(divide()) |> bindEvent(input$divide)
   
-  observeEvent(
-    input$decimal,
-    decimal()
-  )
+  observe(decimal()) |> bindEvent(input$decimal)
   
-  observeEvent(
-    input$percent, 
-    percent()
-  )
+  observe(percent()) |> bindEvent(input$percent)
   
-  observeEvent(
-    input$plus_minus, 
-    plus_minus()
-  )
+  observe(plus_minus()) |> bindEvent(input$plus_minus)
   
-  observeEvent(
-    input$equals, 
-    equals()
-  )
+  observe(equals()) |> bindEvent(input$equals)
   
-  observeEvent(
-    input$clear, 
-    clear()
-  )
+  observe(clear()) |> bindEvent(input$clear)
   
   update_number <- function(number) {
     current_value <- 
