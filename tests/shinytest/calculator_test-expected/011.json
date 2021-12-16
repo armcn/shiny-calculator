@@ -1,0 +1,40 @@
+{
+  "input": {
+    "add": 3,
+    "clear": 10,
+    "decimal": 6,
+    "divide": 0,
+    "eight": 1,
+    "equals": 0,
+    "five": 1,
+    "four": 0,
+    "multiply": 0,
+    "nine": 1,
+    "one": 7,
+    "percent": 0,
+    "plus_minus": 0,
+    "seven": 1,
+    "six": 1,
+    "subtract": 0,
+    "three": 2,
+    "two": 3,
+    "zero": 7
+  },
+  "output": {
+    "lower_screen": {
+      "html": "<p class=\"lower-screen-text\">3<\/p>",
+      "deps": [
+
+      ]
+    },
+    "upper_screen": {
+      "html": "<p class=\"upper-screen-text\">1 + 2<\/p>",
+      "deps": [
+
+      ]
+    }
+  },
+  "export": {
+
+  }
+}

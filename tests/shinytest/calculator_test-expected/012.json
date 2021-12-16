@@ -1,0 +1,40 @@
+{
+  "input": {
+    "add": 4,
+    "clear": 11,
+    "decimal": 6,
+    "divide": 0,
+    "eight": 1,
+    "equals": 0,
+    "five": 1,
+    "four": 0,
+    "multiply": 0,
+    "nine": 2,
+    "one": 8,
+    "percent": 0,
+    "plus_minus": 0,
+    "seven": 1,
+    "six": 1,
+    "subtract": 1,
+    "three": 2,
+    "two": 4,
+    "zero": 7
+  },
+  "output": {
+    "lower_screen": {
+      "html": "<p class=\"lower-screen-text\">-6<\/p>",
+      "deps": [
+
+      ]
+    },
+    "upper_screen": {
+      "html": "<p class=\"upper-screen-text\">1 + 2 - 9<\/p>",
+      "deps": [
+
+      ]
+    }
+  },
+  "export": {
+
+  }
+}
